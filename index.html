@@ -439,31 +439,35 @@
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const formData = new FormData(form);
+        const formData = new URLSearchParams();
+        formData.append("name", form.name.value.trim());
+        formData.append("email", form.email.value.trim());
+        formData.append("message", form.message.value.trim());
 
         try {
-            const response = await fetch(
-                'https://script.google.com/macros/s/AKfycbz_DzHUaoQavkWAriKUy8KM7h7YINsdlyNW89mmC6KUxwfOdvQmiXKfd0gt0SKj4rs1/exec',
-                {
-                    method: 'POST',
-                    body: formData
-                }
-            );
+            const response = await fetch("https://script.google.com/macros/s/AKfycbz_DzHUaoQavkWAriKUy8KM7h7YINsdlyNW89mmC6KUxwfOdvQmiXKfd0gt0SKj4rs1/exec", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: formData.toString(),
+            });
 
             const text = await response.text();
 
             if (text.trim() === "Success") {
                 form.reset();
-                successMsg.classList.remove('hidden');
+                successMsg.classList.remove("hidden");
             } else {
                 alert("Something went wrong: " + text);
             }
-        } catch (error) {
+        } catch (err) {
             alert("Failed to send message. Please try again later.");
-            console.error(error);
+            console.error(err);
         }
     });
 </script>
+
 
 
     <!-- Footer Section -->
